@@ -15,7 +15,7 @@
 #define SPERH (3600)
 #define SPERM (60)
 
-// The first comment is the number, the last parameter is if it's verbosed
+/* The first comment is the number, the last parameter is if it's verbosed */
 static const char *dhcp_options[] = {
 /*   0 */ "pad",
 /*   1 */ "Subnet mask",
@@ -303,7 +303,7 @@ static const char *operands[] = {
 /*   2 */ "BOOTPREPLY"
 };
 
-// Copied from RFC1700
+/* Copied from RFC1700 */
 static const char *htypes[] = {
 /*   0 */ "undefined",
 /*   1 */ "Ethernet",
@@ -346,6 +346,292 @@ static const char *htypes[] = {
 /*  38 */ "Unified Bus"
 };
 
+static const char *operands6[] = {
+/*   0 */ "undefined",
+/*   1 */ "SOLICIT",
+/*   2 */ "ADVERTISE",
+/*   3 */ "REQUEST",
+/*   4 */ "CONFIRM",
+/*   5 */ "RENEW",
+/*   6 */ "REBIND",
+/*   7 */ "REPLY",
+/*   8 */ "RELEASE",
+/*   9 */ "DECLINE",
+/*  10 */ "RECONFIGURE",
+/*  11 */ "INFORMATION-REQUEST",
+/*  12 */ "RELAY-FORW",
+/*  13 */ "RELAY-REPL",
+/*  14 */ "LEASEQUERY",
+/*  15 */ "LEASEQUERY-REPLY",
+/*  16 */ "LEASEQUERY-DONE",
+/*  17 */ "LEASEQUERY-DATA",
+/*  18 */ "RECONFIGURE-REQUEST",
+/*  19 */ "RECONFIGURE-REPLY",
+/*  20 */ "DHCPV4-QUERY",
+/*  21 */ "DHCPV4-RESPONSE",
+/*  22 */ "ACTIVELEASEQUERY",
+/*  23 */ "STARTTLS"
+};
+
+static const char *dhcp_options6[] = {
+/*   0 */ "pad",
+/*   1 */ "CLIENTID",
+/*   2 */ "SERVERID",
+/*   3 */ "IA_NA",
+/*   4 */ "IA_TA",
+/*   5 */ "IAADDR",
+/*   6 */ "ORO",
+/*   7 */ "PREFERENCE",
+/*   8 */ "ELAPSED_TIME",
+/*   9 */ "RELAY_MSG",
+/*  10 */ "unknown",
+/*  11 */ "AUTH",
+/*  12 */ "UNICAST",
+/*  13 */ "STATUS_CODE",
+/*  14 */ "RAPID_COMMIT",
+/*  15 */ "USER_CLASS",
+/*  16 */ "VENDOR_CLASS",
+/*  17 */ "VENDOR_OPTS",
+/*  18 */ "INTERFACE_ID",
+/*  19 */ "RECONF_MSG",
+/*  20 */ "RECONF_ACCEPT",
+/*  21 */ "SIP_SERVER_D",
+/*  22 */ "SIP_SERVER_A",
+/*  23 */ "DNS_SERVERS",
+/*  24 */ "DOMAIN_LIST",
+/*  25 */ "IA_PD",
+/*  26 */ "IAPREFIX",
+/*  27 */ "NIS_SERVERS",
+/*  28 */ "NISP_SERVERS",
+/*  29 */ "NIS_DOMAIN_NAME",
+/*  30 */ "NISP_DOMAIN_NAME",
+/*  31 */ "SNTP_SERVERS",
+/*  32 */ "INFORMATION_REFRESH_TIME",
+/*  33 */ "BCMCS_SERVER_D",
+/*  34 */ "BCMCS_SERVER_A",
+/*  35 */ "unknown",
+/*  36 */ "GEOCONF_CIVIC",
+/*  37 */ "REMOTE_ID",
+/*  38 */ "SUBSCRIBER_ID",
+/*  39 */ "CLIENT_FQDN",
+/*  40 */ "PANA_AGENT",
+/*  41 */ "NEW_POSIX_TIMEZONE",
+/*  42 */ "NEW_TZDB_TIMEZONE",
+/*  43 */ "ERO",
+/*  44 */ "LQ_QUERY",
+/*  45 */ "CLIENT_DATA",
+/*  46 */ "CLT_TIME",
+/*  47 */ "LQ_RELAY_DATA",
+/*  48 */ "LQ_CLIENT_LINK",
+/*  49 */ "MIP6_HNIDF",
+/*  50 */ "MIP6_VDINF",
+/*  51 */ "V6_LOST",
+/*  52 */ "CAPWAP_AC_V6",
+/*  53 */ "RELAY_ID",
+/*  54 */ "IPv6_Address-MoS",
+/*  55 */ "IPv6_FQDN-MoS",
+/*  56 */ "NTP_SERVER",
+/*  57 */ "V6_ACCESS_DOMAIN",
+/*  58 */ "SIP_UA_CS_LIST",
+/*  59 */ "OPT_BOOTFILE_URL",
+/*  60 */ "OPT_BOOTFILE_PARAM",
+/*  61 */ "CLIENT_ARCH_TYPE",
+/*  62 */ "NII",
+/*  63 */ "GEOLOCATION",
+/*  64 */ "AFTR_NAME",
+/*  65 */ "ERP_LOCAL_DOMAIN_NAME",
+/*  66 */ "RSOO",
+/*  67 */ "PD_EXCLUDE",
+/*  68 */ "VSS",
+/*  69 */ "MIP6_IDINF",
+/*  70 */ "MIP6_UDINF",
+/*  71 */ "MIP6_HNP",
+/*  72 */ "MIP6_HAA",
+/*  73 */ "MIP6_HAF",
+/*  74 */ "RDNSS_SELECTION",
+/*  75 */ "KRB_PRINCIPAL_NAME",
+/*  76 */ "KRB_REALM_NAME",
+/*  77 */ "KRB_DEFAULT_REALM_NAME",
+/*  78 */ "KRB_KDC",
+/*  79 */ "CLIENT_LINKLAYER_ADDR",
+/*  80 */ "LINK_ADDRESS",
+/*  81 */ "RADIUS",
+/*  82 */ "SOL_MAX_RT",
+/*  83 */ "INF_MAX_RT",
+/*  84 */ "ADDRSEL",
+/*  85 */ "ADDRSEL_TABLE",
+/*  86 */ "V6_PCP_SERVER",
+/*  87 */ "DHCPV4_MSG",
+/*  88 */ "DHCP4_O_DHCP6_SERVER",
+/*  89 */ "S46_RULE",
+/*  90 */ "S46_BR",
+/*  91 */ "S46_DMR",
+/*  92 */ "S46_V4V6BIND",
+/*  93 */ "S46_PORTPARAMS",
+/*  94 */ "S46_CONT_MAPE",
+/*  95 */ "S46_CONT_MAPT",
+/*  96 */ "S46_CONT_LW",
+/*  97 */ "4RD",
+/*  98 */ "4RD_MAP_RULE",
+/*  99 */ "4RD_NON_MAP_RULE",
+/* 100 */ "LQ_BASE_TIME",
+/* 101 */ "LQ_START_TIME",
+/* 102 */ "LQ_END_TIME",
+/* 103 */ "DHCP Captive-Portal",
+/* 104 */ "MPL_PARAMETERS",
+/* 105 */ "ANI_ATT",
+/* 106 */ "ANI_NETWORK_NAME",
+/* 107 */ "ANI_AP_NAME",
+/* 108 */ "ANI_AP_BSSID",
+/* 109 */ "ANI_OPERATOR_ID",
+/* 110 */ "ANI_OPERATOR_REALM",
+/* 111 */ "S46_PRIORITY",
+/* 112 */ "MUD_URL_V6",
+/* 113 */ "V6_PREFIX64",
+/* 114 */ "F_BINDING_STATUS",
+/* 115 */ "F_CONNECT_FLAGS",
+/* 116 */ "F_DNS_REMOVAL_INFO",
+/* 117 */ "F_DNS_HOST_NAME",
+/* 118 */ "F_DNS_ZONE_NAME",
+/* 119 */ "F_DNS_FLAGS",
+/* 120 */ "F_EXPIRATION_TIME",
+/* 121 */ "F_MAX_UNACKED_BNDUPD",
+/* 122 */ "F_MCLT",
+/* 123 */ "F_PARTNER_LIFETIME",
+/* 124 */ "F_PARTNER_LIFETIME_SENT",
+/* 125 */ "F_PARTNER_DOWN_TIME",
+/* 126 */ "F_PARTNER_RAW_CLT_TIME",
+/* 127 */ "F_PROTOCOL_VERSION",
+/* 128 */ "F_KEEPALIVE_TIME",
+/* 129 */ "F_RECONFIGURE_DATA",
+/* 130 */ "F_RELATIONSHIP_NAME",
+/* 131 */ "F_SERVER_FLAGS",
+/* 132 */ "F_SERVER_STATE",
+/* 133 */ "F_START_TIME_OF_STATE",
+/* 134 */ "F_STATE_EXPIRATION_TIME",
+/* 135 */ "RELAY_PORT",
+/* 136 */ "unknown",
+/* 137 */ "unknown",
+/* 138 */ "unknown",
+/* 139 */ "unknown",
+/* 140 */ "unknown",
+/* 141 */ "unknown",
+/* 142 */ "unknown",
+/* 143 */ "IPv6_Address-ANDSF"
+/* 144 */ "unknown",
+/* 145 */ "unknown",
+/* 146 */ "unknown",
+/* 147 */ "unknown",
+/* 148 */ "unknown",
+/* 149 */ "unknown",
+/* 150 */ "unknown",
+/* 151 */ "unknown",
+/* 152 */ "unknown",
+/* 153 */ "unknown",
+/* 154 */ "unknown",
+/* 155 */ "unknown",
+/* 156 */ "unknown",
+/* 157 */ "unknown",
+/* 158 */ "unknown",
+/* 159 */ "unknown",
+/* 160 */ "unknown",
+/* 161 */ "unknown",
+/* 162 */ "unknown",
+/* 163 */ "???",
+/* 164 */ "???",
+/* 165 */ "???",
+/* 166 */ "???",
+/* 167 */ "???",
+/* 168 */ "???",
+/* 169 */ "???",
+/* 170 */ "???",
+/* 171 */ "???",
+/* 172 */ "???",
+/* 173 */ "???",
+/* 174 */ "???",
+/* 175 */ "unknown",
+/* 176 */ "unknown",
+/* 177 */ "unknown",
+/* 178 */ "???",
+/* 179 */ "???",
+/* 180 */ "???",
+/* 181 */ "???",
+/* 182 */ "???",
+/* 183 */ "???",
+/* 184 */ "???",
+/* 185 */ "???",
+/* 186 */ "???",
+/* 187 */ "???",
+/* 188 */ "???",
+/* 189 */ "???",
+/* 190 */ "???",
+/* 191 */ "???",
+/* 192 */ "???",
+/* 193 */ "???",
+/* 194 */ "???",
+/* 195 */ "???",
+/* 196 */ "???",
+/* 197 */ "???",
+/* 198 */ "???",
+/* 199 */ "???",
+/* 200 */ "???",
+/* 201 */ "???",
+/* 202 */ "???",
+/* 203 */ "???",
+/* 204 */ "???",
+/* 205 */ "???",
+/* 206 */ "???",
+/* 207 */ "???",
+/* 208 */ "unknown",
+/* 209 */ "unknown",
+/* 210 */ "unknown",
+/* 211 */ "unknown",
+/* 212 */ "unknown",
+/* 213 */ "unknown",
+/* 214 */ "???",
+/* 215 */ "???",
+/* 216 */ "???",
+/* 217 */ "???",
+/* 218 */ "???",
+/* 219 */ "???",
+/* 220 */ "unknown",
+/* 221 */ "unknown",
+/* 222 */ "???",
+/* 223 */ "???",
+/* 224 */ "unknown",
+/* 225 */ "unknown",
+/* 226 */ "unknown",
+/* 227 */ "unknown",
+/* 228 */ "unknown",
+/* 229 */ "unknown",
+/* 230 */ "unknown",
+/* 231 */ "unknown",
+/* 232 */ "unknown",
+/* 233 */ "unknown",
+/* 234 */ "unknown",
+/* 235 */ "unknown",
+/* 236 */ "unknown",
+/* 237 */ "unknown",
+/* 238 */ "unknown",
+/* 239 */ "unknown",
+/* 240 */ "unknown",
+/* 241 */ "unknown",
+/* 242 */ "unknown",
+/* 243 */ "unknown",
+/* 244 */ "unknown",
+/* 245 */ "unknown",
+/* 246 */ "unknown",
+/* 247 */ "unknown",
+/* 248 */ "unknown",
+/* 249 */ "unknown",
+/* 250 */ "unknown",
+/* 251 */ "unknown",
+/* 252 */ "unknown",
+/* 253 */ "unknown",
+/* 254 */ "unknown",
+/* 255 */ "End"
+};
+
 static void
 print_string(const unsigned char *xp, size_t xn) {
   while (xn > 0 && *xp != 0) {
@@ -381,6 +667,149 @@ print_hex_colon(const unsigned char *xp, size_t xn) {
 static void
 print_addr4(const unsigned char *xp) {
   printf("%u.%u.%u.%u", xp[0], xp[1], xp[2], xp[3]);
+}
+
+/**
+ * Portable inet_{pton,ntop}.
+ *
+ * Code from libuv[1]. According to c-ares[2][3], this code was
+ * written in 1996 by Paul Vixie and is under the ISC license.
+ *
+ * See LICENSE for more information.
+ *
+ * [1] https://github.com/libuv/libuv/blob/385b796/src/inet.c
+ * [2] https://github.com/c-ares/c-ares/blob/c2f3235/src/lib/inet_ntop.c
+ * [3] https://github.com/c-ares/c-ares/blob/c2f3235/src/lib/inet_net_pton.c
+ */
+
+static int
+inet_ntop4(const unsigned char *src, char *dst, size_t size) {
+  static const char fmt[] = "%u.%u.%u.%u";
+  char tmp[4 * 10 + 3 + 1];
+  int c;
+
+  c = sprintf(tmp, fmt, src[0], src[1], src[2], src[3]);
+
+  if (c <= 0 || (size_t)c + 1 > size)
+    return -1;
+
+  memcpy(dst, tmp, c + 1);
+
+  return 0;
+}
+
+static int
+inet_ntop6(const unsigned char *src, char *dst, size_t size) {
+  /*
+   * Note that int32_t and int16_t need only be "at least" large enough
+   * to contain a value of the specified size.  On some systems, like
+   * Crays, there is no such thing as an integer variable with 16 bits.
+   * Keep this in mind if you think this function should have been coded
+   * to use pointer overlays.  All the world's not a VAX.
+   */
+  struct { int base, len; } best, cur;
+  char tmp[65 + 14 + 1], *tp;
+  unsigned int words[16 / 2];
+  int i;
+
+  /*
+   * Preprocess:
+   *  Copy the input (bytewise) array into a wordwise array.
+   *  Find the longest run of 0x00's in src[] for :: shorthanding.
+   */
+  memset(words, 0, sizeof(words));
+
+  for (i = 0; i < 16; i++)
+    words[i / 2] |= (src[i] << ((1 - (i % 2)) << 3));
+
+  best.base = -1;
+  best.len = 0;
+  cur.base = -1;
+  cur.len = 0;
+
+  for (i = 0; i < (int)lengthof(words); i++) {
+    if (words[i] == 0) {
+      if (cur.base == -1) {
+        cur.base = i;
+        cur.len = 1;
+      } else {
+        cur.len++;
+      }
+    } else {
+      if (cur.base != -1) {
+        if (best.base == -1 || cur.len > best.len)
+          best = cur;
+
+        cur.base = -1;
+      }
+    }
+  }
+
+  if (cur.base != -1) {
+    if (best.base == -1 || cur.len > best.len)
+      best = cur;
+  }
+
+  if (best.base != -1 && best.len < 2)
+    best.base = -1;
+
+  /*
+   * Format the result.
+   */
+  tp = tmp;
+
+  for (i = 0; i < (int)lengthof(words); i++) {
+    /* Are we inside the best run of 0x00's? */
+    if (best.base != -1 && i >= best.base && i < (best.base + best.len)) {
+      if (i == best.base)
+        *tp++ = ':';
+
+      continue;
+    }
+
+    /* Are we following an initial run of 0x00s or any real hex? */
+    if (i != 0)
+      *tp++ = ':';
+
+    /* Is this address an encapsulated IPv4? */
+    if (i == 6 && best.base == 0 && (best.len == 6
+        || (best.len == 7 && words[7] != 0x0001)
+        || (best.len == 5 && words[5] == 0xffff))) {
+      int err = inet_ntop4(src + 12, tp, sizeof(tmp) - (tp - tmp));
+
+      if (err)
+        return err;
+
+      tp += strlen(tp);
+
+      break;
+    }
+
+    tp += sprintf(tp, "%x", words[i]);
+  }
+
+  /* Was it a trailing run of 0x00's? */
+  if (best.base != -1 && (best.base + best.len) == lengthof(words))
+    *tp++ = ':';
+
+  *tp++ = '\0';
+
+  if ((size_t)(tp - tmp) > size)
+    return -1;
+
+  memcpy(dst, tmp, tp - tmp);
+
+  return 0;
+}
+
+static void
+print_addr6(const unsigned char *xp) {
+  char buf[128];
+
+  if (inet_ntop6(xp, buf, sizeof(buf)) != 0)
+    abort();
+
+  printf("%s", buf);
 }
 
 static void
@@ -458,7 +887,7 @@ print_lease(const unsigned char *xp, size_t xn) {
   print_string(xp + 44, 64);
   printf(".\n");
   printf(" FNAME: ");
-  print_string(xp + 108, 64);
+  print_string(xp + 108, 128);
   printf(".\n");
 
   xp += 240;
@@ -621,10 +1050,146 @@ print_lease(const unsigned char *xp, size_t xn) {
   return rc;
 }
 
+static int
+print_lease6(const unsigned char *xp, size_t xn) {
+  int rc = 0;
+
+  if (xn < 4)
+    return 0;
+
+  if (xp[0] >= lengthof(operands6))
+    return 0;
+
+  printf(" TYPE: %d (%s)\n", xp[0], operands6[xp[0]]);
+  printf(" TXID: %x\n", (xp[1] << 16) | (xp[2] << 8) | xp[3]);
+
+  xp += 4;
+  xn -= 4;
+
+  while (xn >= 2 && !(xp[0] == 255 && xp[1] == 255)) {
+    const char *optname = "*unknown*";
+    int opt = (xp[0] << 8) | xp[1];
+
+    xp += 2;
+    xn -= 2;
+
+    if (opt == 0) /* Padding */
+      continue;
+
+    if (xn < 2)
+      break;
+
+    size_t len = (xp[0] << 8) | xp[1];
+
+    xp += 2;
+    xn -= 2;
+
+    if (xn < len)
+      break;
+
+    rc = 1;
+
+    if (opt < (int)lengthof(dhcp_options6))
+      optname = dhcp_options6[opt];
+
+    printf("OPTION: %3d (%3d) %-26s", opt, (int)len, optname);
+
+    switch (opt) {
+      case 1: /* CLIENTID */
+      case 2: /* SERVERID */ {
+        print_hex_colon(xp, len);
+        break;
+      }
+
+      case 23: { /* DNS_SERVERS */
+        size_t i;
+
+        for (i = 0; i < (len >> 4); i++) {
+          if (i != 0)
+            printf(",");
+          print_addr6(xp);
+          xp += 16;
+          xn -= 16;
+        }
+
+        len &= 15;
+
+        break;
+      }
+
+      case 24: { /* DOMAIN_LIST */
+        const unsigned char *tp = xp;
+        size_t tn = len;
+        int com = 0;
+
+        while (tn > 0) {
+          size_t c = *tp;
+
+          tp += 1;
+          tn -= 1;
+
+          if (c == 0x00) {
+            com = 1;
+            continue;
+          }
+
+          if (c & 0xc0)
+            break; /* error */
+
+          if (tn < c)
+            break; /* error */
+
+          if (com)
+            printf(",");
+
+          print_string(tp, c);
+          printf(".");
+
+          tp += c;
+          tn -= c;
+        }
+
+        break;
+      }
+
+      case 82: { /* SOL_MAX_RT */
+        if (len >= 4)
+          print_time32(xp);
+        break;
+      }
+
+      default: {
+        print_hex(xp, len);
+        break;
+      }
+    }
+
+    printf("\n");
+
+    xp += len;
+    xn -= len;
+  }
+
+  fflush(stdout);
+
+  return rc;
+}
+
 static void
 file_error(char **argv, const char *action) {
   const char *msg = strerror(errno);
   fprintf(stderr, "%s: cannot %s '%s': %s\n", argv[0], action, argv[1], msg);
+}
+
+static int
+ends_with(const char *xp, const char *yp) {
+  size_t xn = strlen(xp);
+  size_t yn = strlen(yp);
+
+  if (xn < yn)
+    return 0;
+
+  return memcmp(xp + xn - yn, yp, yn) == 0;
 }
 
 int
@@ -665,9 +1230,17 @@ main(int argc, char **argv) {
     goto fail;
   }
 
-  if (!print_lease(buf, st.st_size)) {
-    fprintf(stderr, "Could not parse %s\n", argv[1]);
-    goto fail;
+  if (ends_with(argv[1], ".lease6") ||
+      (argc > 2 && strcmp(argv[2], "-6") == 0)) {
+    if (!print_lease6(buf, st.st_size)) {
+      fprintf(stderr, "Could not parse %s\n", argv[1]);
+      goto fail;
+    }
+  } else {
+    if (!print_lease(buf, st.st_size)) {
+      fprintf(stderr, "Could not parse %s\n", argv[1]);
+      goto fail;
+    }
   }
 
   close(fd);
