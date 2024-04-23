@@ -1,0 +1,65 @@
+=head1 NAME
+
+B<leasedump> - DHCP lease dumper
+
+=head1 SYNOPSIS
+
+B<leasedump> I<lease-file> [B<-6>]
+
+=head1 DESCRIPTION
+
+Dumps dhcpcd S<.lease> files, usually contained in
+S</var/lib/dhcpcd/[if]-[ssid].lease>.
+
+=head1 USAGE
+
+S<leasedump /var/lib/dhcpcd/wlan0-MySSID.lease>
+
+S<leasedump> will automatically parse S<lease6> file extensions as DHCPv6
+messages. To force this behavior, append the B<-6> flag.
+
+=head1 OUTPUT
+
+    OP: 2 (BOOTPREPLY)
+ HTYPE: 1 (Ethernet)
+  HLEN: 6
+  HOPS: 0
+   XID: fe3d0f32
+  SECS: 0
+ FLAGS: 0
+CIADDR: 0.0.0.0
+YIADDR: 192.168.0.144
+SIADDR: 0.0.0.0
+GIADDR: 0.0.0.0
+CHADDR: 12:14:25:11:78:e1:00:00:00:00:00:00:00:00:00:00
+ SNAME: .
+ FNAME: .
+OPTION:  53 (  1) DHCP message type         5 (DHCPACK)
+OPTION:  54 (  4) DHCP Server identifier    192.168.0.1
+OPTION:  51 (  4) IP address leasetime      172800 (2d)
+OPTION:   1 (  4) Subnet mask               255.255.255.0
+OPTION:   3 (  4) Router                    192.168.0.1
+OPTION:   6 (  4) DNS server                192.168.0.2
+OPTION:  58 (  4) Renewal Time T1           86400 (24h)
+OPTION:  59 (  4) Rebinding Time T2         151200 (1d18h)
+
+=head1 RETURN VALUES
+
+Returns 1 if parsing failed, 0 otherwise.
+
+=head1 NOTES
+
+Privileged access is often needed for reading S</var/lib/dhcpcd/>.
+
+=head1 AUTHOR
+
+Christopher Jeffrey (https://github.com/chjj)
+
+Based on earlier work from:
+
+  Edwin Groothuis, edwin@mavetju.org (http://www.mavetju.org)
+  Boian Bonev, bbonev@ipacct.com (https://github.com/bbonev)
+
+=head1 SEE ALSO
+
+dhcpdump(8), dhcprobe(8), dhcpd(8), RFC2132, RFC8415
