@@ -928,6 +928,7 @@ print_lease(const unsigned char *xp, size_t xn) {
 
   while (xn > 0 && *xp != 255) {
     int opt = *xp;
+    size_t len;
 
     xp += 1;
     xn -= 1;
@@ -938,7 +939,7 @@ print_lease(const unsigned char *xp, size_t xn) {
     if (xn == 0)
       break;
 
-    size_t len = *xp;
+    len = *xp;
 
     xp += 1;
     xn -= 1;
@@ -1102,6 +1103,7 @@ print_lease6(const unsigned char *xp, size_t xn) {
   while (xn >= 2) {
     const char *optname = "*unknown*";
     int opt = (xp[0] << 8) | xp[1];
+    size_t len;
 
     xp += 2;
     xn -= 2;
@@ -1109,7 +1111,7 @@ print_lease6(const unsigned char *xp, size_t xn) {
     if (xn < 2)
       break;
 
-    size_t len = (xp[0] << 8) | xp[1];
+    len = (xp[0] << 8) | xp[1];
 
     xp += 2;
     xn -= 2;
