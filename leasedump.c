@@ -1,3 +1,26 @@
+/*!
+ * leasedump.c - dhcp lease dumper
+ * Copyright (c) 2024, Christopher Jeffrey (MIT License).
+ * https://github.com/chjj/leasedump
+ *
+ * Parts of this software are based on dhcpdump:
+ *   Copyright (c) 2001-2024, Edwin Groothuis (BSD 2-Clause).
+ *   Copyright (c) 2023-2024, Boian Bonev (BSD 2-Clause).
+ *   https://github.com/bbonev/dhcpdump
+ *
+ * See LICENSE for more information.
+ *
+ * DHCPv4 Resources:
+ *   https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
+ *   https://datatracker.ietf.org/doc/html/rfc2131
+ *   https://datatracker.ietf.org/doc/html/rfc2132
+ *   https://github.com/bbonev/dhcpdump/blob/master/dhcpdump.c
+ *
+ * DHCPv6 Resources:
+ *   https://en.wikipedia.org/wiki/DHCPv6
+ *   https://datatracker.ietf.org/doc/html/rfc8415
+ */
+
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -8,12 +31,20 @@
 #include <fcntl.h> /* open, O_* */
 #include <unistd.h> /* read, close */
 
+/*
+ * Macros
+ */
+
 #define lengthof(x) (sizeof(x) / sizeof((x)[0]))
 
 #define SPERW (7 * 24 * 3600)
 #define SPERD (24 * 3600)
 #define SPERH (3600)
 #define SPERM (60)
+
+/*
+ * Constants
+ */
 
 /* The first comment is the number, the last parameter is if it's verbosed */
 static const char *dhcp_options[] = {
@@ -346,6 +377,7 @@ static const char *htypes[] = {
 /*  38 */ "Unified Bus"
 };
 
+/* https://datatracker.ietf.org/doc/html/rfc8415#section-7.3 */
 static const char *operands6[] = {
 /*   0 */ "undefined",
 /*   1 */ "SOLICIT",
@@ -373,8 +405,9 @@ static const char *operands6[] = {
 /*  23 */ "STARTTLS"
 };
 
+/* https://datatracker.ietf.org/doc/html/rfc8415#section-21 */
 static const char *dhcp_options6[] = {
-/*   0 */ "pad",
+/*   0 */ "undefined",
 /*   1 */ "CLIENTID",
 /*   2 */ "SERVERID",
 /*   3 */ "IA_NA",
@@ -384,7 +417,7 @@ static const char *dhcp_options6[] = {
 /*   7 */ "PREFERENCE",
 /*   8 */ "ELAPSED_TIME",
 /*   9 */ "RELAY_MSG",
-/*  10 */ "unknown",
+/*  10 */ "REMOVED/Unassigned",
 /*  11 */ "AUTH",
 /*  12 */ "UNICAST",
 /*  13 */ "STATUS_CODE",
@@ -409,7 +442,7 @@ static const char *dhcp_options6[] = {
 /*  32 */ "INFORMATION_REFRESH_TIME",
 /*  33 */ "BCMCS_SERVER_D",
 /*  34 */ "BCMCS_SERVER_A",
-/*  35 */ "unknown",
+/*  35 */ "REMOVED/Unassigned",
 /*  36 */ "GEOCONF_CIVIC",
 /*  37 */ "REMOTE_ID",
 /*  38 */ "SUBSCRIBER_ID",
@@ -510,33 +543,33 @@ static const char *dhcp_options6[] = {
 /* 133 */ "F_START_TIME_OF_STATE",
 /* 134 */ "F_STATE_EXPIRATION_TIME",
 /* 135 */ "RELAY_PORT",
-/* 136 */ "unknown",
-/* 137 */ "unknown",
-/* 138 */ "unknown",
-/* 139 */ "unknown",
-/* 140 */ "unknown",
-/* 141 */ "unknown",
-/* 142 */ "unknown",
+/* 136 */ "???",
+/* 137 */ "???",
+/* 138 */ "???",
+/* 139 */ "???",
+/* 140 */ "???",
+/* 141 */ "???",
+/* 142 */ "???",
 /* 143 */ "IPv6_Address-ANDSF"
-/* 144 */ "unknown",
-/* 145 */ "unknown",
-/* 146 */ "unknown",
-/* 147 */ "unknown",
-/* 148 */ "unknown",
-/* 149 */ "unknown",
-/* 150 */ "unknown",
-/* 151 */ "unknown",
-/* 152 */ "unknown",
-/* 153 */ "unknown",
-/* 154 */ "unknown",
-/* 155 */ "unknown",
-/* 156 */ "unknown",
-/* 157 */ "unknown",
-/* 158 */ "unknown",
-/* 159 */ "unknown",
-/* 160 */ "unknown",
-/* 161 */ "unknown",
-/* 162 */ "unknown",
+/* 144 */ "???",
+/* 145 */ "???",
+/* 146 */ "???",
+/* 147 */ "???",
+/* 148 */ "???",
+/* 149 */ "???",
+/* 150 */ "???",
+/* 151 */ "???",
+/* 152 */ "???",
+/* 153 */ "???",
+/* 154 */ "???",
+/* 155 */ "???",
+/* 156 */ "???",
+/* 157 */ "???",
+/* 158 */ "???",
+/* 159 */ "???",
+/* 160 */ "???",
+/* 161 */ "???",
+/* 162 */ "???",
 /* 163 */ "???",
 /* 164 */ "???",
 /* 165 */ "???",
@@ -549,9 +582,9 @@ static const char *dhcp_options6[] = {
 /* 172 */ "???",
 /* 173 */ "???",
 /* 174 */ "???",
-/* 175 */ "unknown",
-/* 176 */ "unknown",
-/* 177 */ "unknown",
+/* 175 */ "???",
+/* 176 */ "???",
+/* 177 */ "???",
 /* 178 */ "???",
 /* 179 */ "???",
 /* 180 */ "???",
@@ -582,54 +615,54 @@ static const char *dhcp_options6[] = {
 /* 205 */ "???",
 /* 206 */ "???",
 /* 207 */ "???",
-/* 208 */ "unknown",
-/* 209 */ "unknown",
-/* 210 */ "unknown",
-/* 211 */ "unknown",
-/* 212 */ "unknown",
-/* 213 */ "unknown",
+/* 208 */ "???",
+/* 209 */ "???",
+/* 210 */ "???",
+/* 211 */ "???",
+/* 212 */ "???",
+/* 213 */ "???",
 /* 214 */ "???",
 /* 215 */ "???",
 /* 216 */ "???",
 /* 217 */ "???",
 /* 218 */ "???",
 /* 219 */ "???",
-/* 220 */ "unknown",
-/* 221 */ "unknown",
+/* 220 */ "???",
+/* 221 */ "???",
 /* 222 */ "???",
 /* 223 */ "???",
-/* 224 */ "unknown",
-/* 225 */ "unknown",
-/* 226 */ "unknown",
-/* 227 */ "unknown",
-/* 228 */ "unknown",
-/* 229 */ "unknown",
-/* 230 */ "unknown",
-/* 231 */ "unknown",
-/* 232 */ "unknown",
-/* 233 */ "unknown",
-/* 234 */ "unknown",
-/* 235 */ "unknown",
-/* 236 */ "unknown",
-/* 237 */ "unknown",
-/* 238 */ "unknown",
-/* 239 */ "unknown",
-/* 240 */ "unknown",
-/* 241 */ "unknown",
-/* 242 */ "unknown",
-/* 243 */ "unknown",
-/* 244 */ "unknown",
-/* 245 */ "unknown",
-/* 246 */ "unknown",
-/* 247 */ "unknown",
-/* 248 */ "unknown",
-/* 249 */ "unknown",
-/* 250 */ "unknown",
-/* 251 */ "unknown",
-/* 252 */ "unknown",
-/* 253 */ "unknown",
-/* 254 */ "unknown",
-/* 255 */ "End"
+/* 224 */ "???",
+/* 225 */ "???",
+/* 226 */ "???",
+/* 227 */ "???",
+/* 228 */ "???",
+/* 229 */ "???",
+/* 230 */ "???",
+/* 231 */ "???",
+/* 232 */ "???",
+/* 233 */ "???",
+/* 234 */ "???",
+/* 235 */ "???",
+/* 236 */ "???",
+/* 237 */ "???",
+/* 238 */ "???",
+/* 239 */ "???",
+/* 240 */ "???",
+/* 241 */ "???",
+/* 242 */ "???",
+/* 243 */ "???",
+/* 244 */ "???",
+/* 245 */ "???",
+/* 246 */ "???",
+/* 247 */ "???",
+/* 248 */ "???",
+/* 249 */ "???",
+/* 250 */ "???",
+/* 251 */ "???",
+/* 252 */ "???",
+/* 253 */ "???",
+/* 254 */ "???",
+/* 255 */ "???"
 };
 
 static void
@@ -918,70 +951,70 @@ print_lease(const unsigned char *xp, size_t xn) {
     printf("OPTION: %3d (%3d) %-26s", opt, (int)len, dhcp_options[opt]);
 
     switch (opt) {
-      case 1: // Subnetmask
-      case 16: // Swap server
-      case 28: // Broadcast address
-      case 32: // Router solicitation
-      case 50: // Requested IP address
-      case 54: // Server identifier
-      case 118: { // Subnet selection option
+      case 1: /* Subnetmask */
+      case 16: /* Swap server */
+      case 28: /* Broadcast address */
+      case 32: /* Router solicitation */
+      case 50: /* Requested IP address */
+      case 54: /* Server identifier */
+      case 118: { /* Subnet selection option */
         if (len >= 4)
           print_addr4(xp);
         break;
       }
 
-      case 12: // Hostname
-      case 14: // Merit dump file
-      case 15: // Domain name
-      case 17: // Root Path
-      case 18: // Extensions path
-      case 40: // NIS domain
-      case 56: // Message
-      case 62: // Netware/IP domain name
-      case 64: // NIS+ domain
-      case 66: // TFTP server name
-      case 67: // bootfile name
-      case 86: // NDS Tree name
-      case 87: // NDS context
-      case 100: // PCode - TZ-Posix String
-      case 101: // TCode - TX-Database String
-      case 114: // Captive-portal
-      case 147: { // DOTS Reference Identifier
+      case 12: /* Hostname */
+      case 14: /* Merit dump file */
+      case 15: /* Domain name */
+      case 17: /* Root Path */
+      case 18: /* Extensions path */
+      case 40: /* NIS domain */
+      case 56: /* Message */
+      case 62: /* Netware/IP domain name */
+      case 64: /* NIS+ domain */
+      case 66: /* TFTP server name */
+      case 67: /* bootfile name */
+      case 86: /* NDS Tree name */
+      case 87: /* NDS context */
+      case 100: /* PCode - TZ-Posix String */
+      case 101: /* TCode - TX-Database String */
+      case 114: /* Captive-portal */
+      case 147: { /* DOTS Reference Identifier */
         print_string(xp, len);
         break;
       }
 
-      case 3: // Routers
-      case 4: // Time servers
-      case 5: // Name servers
-      case 6: // DNS server
-      case 7: // Log server
-      case 8: // Cookie server
-      case 9: // LPR server
-      case 10: // Impress server
-      case 11: // Resource location server
-      case 41: // NIS servers
-      case 42: // NTP servers
-      case 44: // NetBIOS name server
-      case 45: // NetBIOS datagram distribution server
-      case 48: // X Window System font server
-      case 49: // X Window System display server
-      case 65: // NIS+ servers
-      case 68: // Mobile IP home agent
-      case 69: // SMTP server
-      case 70: // POP3 server
-      case 71: // NNTP server
-      case 72: // WWW server
-      case 73: // Finger server
-      case 74: // IRC server
-      case 75: // StreetTalk server
-      case 76: // StreetTalk directory assistance server
-      case 78: // Directory Agent
-      case 85: // NDS server
-      case 92: // Associated IP
-      case 148: // DOTS Address
-      case 150: // TFTP server address
-      case 162: { // Encrypted DNS Server
+      case 3: /* Routers */
+      case 4: /* Time servers */
+      case 5: /* Name servers */
+      case 6: /* DNS server */
+      case 7: /* Log server */
+      case 8: /* Cookie server */
+      case 9: /* LPR server */
+      case 10: /* Impress server */
+      case 11: /* Resource location server */
+      case 41: /* NIS servers */
+      case 42: /* NTP servers */
+      case 44: /* NetBIOS name server */
+      case 45: /* NetBIOS datagram distribution server */
+      case 48: /* X Window System font server */
+      case 49: /* X Window System display server */
+      case 65: /* NIS+ servers */
+      case 68: /* Mobile IP home agent */
+      case 69: /* SMTP server */
+      case 70: /* POP3 server */
+      case 71: /* NNTP server */
+      case 72: /* WWW server */
+      case 73: /* Finger server */
+      case 74: /* IRC server */
+      case 75: /* StreetTalk server */
+      case 76: /* StreetTalk directory assistance server */
+      case 78: /* Directory Agent */
+      case 85: /* NDS server */
+      case 92: /* Associated IP */
+      case 148: /* DOTS Address */
+      case 150: /* TFTP server address */
+      case 162: { /* Encrypted DNS Server */
         size_t i;
 
         for (i = 0; i < (len >> 2); i++) {
@@ -997,7 +1030,7 @@ print_lease(const unsigned char *xp, size_t xn) {
         break;
       }
 
-      case 53: { // DHCP message type
+      case 53: { /* DHCP message type */
         const char *name = "*unknown*";
         unsigned int type;
 
@@ -1014,20 +1047,20 @@ print_lease(const unsigned char *xp, size_t xn) {
         break;
       }
 
-      case 2: // Time offset
-      case 24: // Path MTU aging timeout
-      case 35: // ARP cache timeout
-      case 38: // TCP keepalive interval
-      case 51: // IP address leasetime
-      case 58: // T1
-      case 59: // T2
-      case 91: // Client last transaction time
-      case 108: // IPv6-Only preferred
-      case 152: // base-time
-      case 153: // start-time-of-state
-      case 154: // query-start-time
-      case 155: // query-end-time
-      case 211: { // reboot-time
+      case 2: /* Time offset */
+      case 24: /* Path MTU aging timeout */
+      case 35: /* ARP cache timeout */
+      case 38: /* TCP keepalive interval */
+      case 51: /* IP address leasetime */
+      case 58: /* T1 */
+      case 59: /* T2 */
+      case 91: /* Client last transaction time */
+      case 108: /* IPv6-Only preferred */
+      case 152: /* base-time */
+      case 153: /* start-time-of-state */
+      case 154: /* query-start-time */
+      case 155: /* query-end-time */
+      case 211: { /* reboot-time */
         if (len >= 4)
           print_time32(xp);
         break;
@@ -1066,15 +1099,12 @@ print_lease6(const unsigned char *xp, size_t xn) {
   xp += 4;
   xn -= 4;
 
-  while (xn >= 2 && !(xp[0] == 255 && xp[1] == 255)) {
+  while (xn >= 2) {
     const char *optname = "*unknown*";
     int opt = (xp[0] << 8) | xp[1];
 
     xp += 2;
     xn -= 2;
-
-    if (opt == 0) /* Padding */
-      continue;
 
     if (xn < 2)
       break;
@@ -1197,10 +1227,15 @@ main(int argc, char **argv) {
   unsigned char buf[16 << 10];
   struct stat st;
   ssize_t nbytes;
-  int rc, fd;
+  int i, rc, fd;
 
-  if (argc < 2 || argv[0] == NULL || argv[1] == NULL) {
-    fprintf(stderr, "Usage: $ leasedump /var/lib/dhcpcd/if-ssid.lease\n");
+  for (i = 0; i < argc; i++) {
+    if (argv[i] == NULL)
+      return EXIT_FAILURE;
+  }
+
+  if (argc < 2) {
+    fprintf(stderr, "Usage: $ %s /var/lib/dhcpcd/if-ssid.lease\n", argv[0]);
     return EXIT_FAILURE;
   }
 
