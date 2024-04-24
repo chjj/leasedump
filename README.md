@@ -14,7 +14,7 @@ So far, I've only found a few not-so-great methods of determining the router's
 DNS servers and subsequently determined that it would be easier to simply parse
 the `.lease` files directly. Is there a CLI tool for this? Apparently not.
 
-[dhcpdump] and [dchprobe] come close, but don't allow one to parse a DHCP
+[dhcpdump] and [dhcprobe] come close, but don't allow one to parse a DHCP
 message file directly.
 
 _leasedump_ repurposes some code from [dhcpdump] to parse DHCP messages. It
@@ -23,7 +23,7 @@ rest easy about running it as root (`/var/lib/dhcpcd` requires root access on
 my system). If you're extra paranoid, you can copy the `.lease` file and give
 it regular user permissions first.
 
-Furthermore, unlike dchpdump/dhcprobe, leasedump also supports DHCPv6 messages.
+Furthermore, unlike dhcpdump/dhcprobe, leasedump also supports DHCPv6 messages.
 
 ## Usage
 
