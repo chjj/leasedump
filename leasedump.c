@@ -550,7 +550,7 @@ static const char *dhcp_options6[] = {
 /* 140 */ "???",
 /* 141 */ "???",
 /* 142 */ "???",
-/* 143 */ "IPv6_Address-ANDSF"
+/* 143 */ "IPv6_Address-ANDSF",
 /* 144 */ "???",
 /* 145 */ "???",
 /* 146 */ "???",
